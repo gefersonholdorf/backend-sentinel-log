@@ -1,12 +1,20 @@
 import type { FastifyPluginCallbackZod } from "fastify-type-provider-zod";
+import { CreateUserController } from "../../controllers/users/create-user-controller";
+import z from "zod";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
+import { createUserSchema } from "../../schemas/users-schema";
+import { DrizzleUserRepository } from "../../databases/drizzle/repositories/drizzle-user-repository";
+import { db } from "../../databases/drizzle/drizzle-client";
 
 export const createUserRoute: FastifyPluginCallbackZod = (app) => {
-    app.post('/users', {
+    const userRepository = new DrizzleUserRepository(db)
+    const createUserController = new CreateUserController(userRepository)
+
+    app.withTypeProvider<ZodTypeProvider>().post('/users', {
         schema: {
             tags: ['Users'],
-            summary: 'Create a new User'
+            summary: 'Create a new User',
+            body: createUserSchema
         }
-    }, async (request, reply) => {
-        return reply.status(201).send({message: 'OK'})
-    })
+    }, createUserController.handle.bind(createUserController))
 }

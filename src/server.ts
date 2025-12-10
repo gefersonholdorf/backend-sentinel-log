@@ -4,11 +4,16 @@ import fastify from "fastify";
 import fastifyCors from "@fastify/cors";
 import { jsonSchemaTransform, jsonSchemaTransformObject, serializerCompiler, validatorCompiler, type ZodTypeProvider } from "fastify-type-provider-zod";
 import { routes } from "./routes/routes";
+import fastifyJwt from "@fastify/jwt";
+import { env } from "./env";
+import { registerErrorHandler } from "./middlewares/error-handler";
 
 export const server = fastify().withTypeProvider<ZodTypeProvider>()
 
 server.setValidatorCompiler(validatorCompiler)
 server.setSerializerCompiler(serializerCompiler)
+
+registerErrorHandler(server)
 
 server.register(fastifyCors, {
     origin: true
@@ -42,4 +47,9 @@ server.register(fastifyApiReference, {
 	routePrefix: "/docs",
 });
 
+server.register(fastifyJwt, {
+	secret: env.JWT_API_KEY,
+})
+
 server.register(routes, {prefix: 'api/v1/'})
+
