@@ -13,7 +13,6 @@ export class CreateUserController implements Controller {
 
         try {
             const existingUserWithByEmail = await this.userRepository.findByEmail(email)
-            console.log(existingUserWithByEmail)
 
             if(existingUserWithByEmail.user) {
                 throw new ExistingEntityError('This email already exists.')

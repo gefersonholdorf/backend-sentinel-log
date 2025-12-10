@@ -14,7 +14,18 @@ export const createUserRoute: FastifyPluginCallbackZod = (app) => {
         schema: {
             tags: ['Users'],
             summary: 'Create a new User',
-            body: createUserSchema
+            body: createUserSchema,
+            response: {
+                201: z.object({
+                    id: z.number()
+                }),
+                409: z.object({
+                    message: z.string()
+                }),
+                500: z.object({
+                    message: z.string()
+                })
+            }
         }
     }, createUserController.handle.bind(createUserController))
 }
