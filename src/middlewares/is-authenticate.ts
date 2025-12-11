@@ -15,13 +15,15 @@ export function isAuthenticate(app: FastifyInstance) {
         try {
             const decode = await app.jwt.verify(token)
 
-            const { id, role } = decode as { id: string, role: string}
+            console.log(decode)
+
+            const { sub, role } = decode as { sub: string, role: string}
 
             request.profile = {
-                id: Number(id),
+                id: Number(sub),
                 role: role as 'super_admin' | 'admin' | 'member'
             }
-            
+
         } catch (error) {
             console.error(error)
             return reply.status(401).send({
