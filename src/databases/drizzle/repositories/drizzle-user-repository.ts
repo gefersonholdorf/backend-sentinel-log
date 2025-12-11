@@ -1,7 +1,7 @@
 import type { User, UserInsert, UserRepository, UserUpdate } from "../../repositories/user-repository";
 import type { MySql2Database } from "drizzle-orm/mysql2";
 import { usersTable } from "../schemas/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export class DrizzleUserRepository implements UserRepository {
     constructor(private readonly db: MySql2Database) {}
