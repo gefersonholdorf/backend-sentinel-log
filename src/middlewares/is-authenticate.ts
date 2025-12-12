@@ -15,8 +15,6 @@ export function isAuthenticate(app: FastifyInstance) {
         try {
             const decode = await app.jwt.verify(token)
 
-            console.log(decode)
-
             const { sub, role } = decode as { sub: string, role: string}
 
             request.profile = {

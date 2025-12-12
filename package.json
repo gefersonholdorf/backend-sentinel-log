@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx --watch --env-file .env src/index.ts",
+    "seed": "tsx --watch --env-file .env src/databases/drizzle/seed.ts",
     "homol": "tsx --env-file .env src/index.ts",
     "build": "tsc",
     "start": "node --env-file .env dist/index.js"
@@ -20,6 +21,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@fastify/cors": "^11.2.0",
     "@fastify/jwt": "^10.0.0",
     "@fastify/swagger": "^9.6.1",

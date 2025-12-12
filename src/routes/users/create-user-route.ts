@@ -5,10 +5,12 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { createUserSchema } from "../../schemas/users-schema";
 import { DrizzleUserRepository } from "../../databases/drizzle/repositories/drizzle-user-repository";
 import { db } from "../../databases/drizzle/drizzle-client";
+import { DrizzleClientRepository } from "../../databases/drizzle/repositories/drizzle-client-repository";
 
 export const createUserRoute: FastifyPluginCallbackZod = (app) => {
     const userRepository = new DrizzleUserRepository(db)
-    const createUserController = new CreateUserController(userRepository)
+    const clientRepository = new DrizzleClientRepository(db)
+    const createUserController = new CreateUserController(userRepository, clientRepository)
 
     app.withTypeProvider<ZodTypeProvider>().post('/users', {
         schema: {
@@ -18,6 +20,9 @@ export const createUserRoute: FastifyPluginCallbackZod = (app) => {
             response: {
                 201: z.object({
                     id: z.number()
+                }),
+                404: z.object({
+                    message: z.string()
                 }),
                 409: z.object({
                     message: z.string()

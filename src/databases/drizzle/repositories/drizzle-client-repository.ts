@@ -1,8 +1,7 @@
-
+import { desc, eq, like, count, asc, sql } from "drizzle-orm";
 import type { MySql2Database } from "drizzle-orm/mysql2";
+import type { Client, ClientInsert, ClientRepository, ClientsPaginationParams, ClientUpdate } from "../../repositories/client-repository";
 import { clientsTable } from "../schemas/schema";
-import { eq } from "drizzle-orm";
-import type { Client, ClientInsert, ClientRepository, ClientUpdate } from "../../repositories/client-repository";
 
 export class DrizzleClientRepository implements ClientRepository {
     constructor(private readonly db: MySql2Database) {}
@@ -23,12 +22,38 @@ export class DrizzleClientRepository implements ClientRepository {
         return { client: client[0] }
     }
 
-    async findAll(): Promise<{ data: Client[]; }> {
-        const clients = await this.db.select().from(clientsTable)
+    async findAll(pagination: ClientsPaginationParams): Promise<{
+        data: Client[];
+        page: number;
+        perPage: number;
+        totalPages: number;
+    }> {
+        const { page = 1, perPage = 10, orderBy = 'desc', filter } = pagination;
+        const offset = (page - 1) * perPage;
+
+        const totalResult = await this.db
+            .select({ total: sql<number>`COUNT(*)` })
+            .from(clientsTable)
+            .where(filter && filter.trim() !== '' ? like(clientsTable.name, `%${filter}%`) : undefined);
+
+        const totalItems = Number(totalResult[0].total);
+        console.log(totalResult)
+        const totalPages = Math.ceil(totalItems / perPage);
+
+        const clients = await this.db
+            .select()
+            .from(clientsTable)
+            .where(filter ? like(clientsTable.name, `%${filter}%`) : undefined)
+            .orderBy(desc(clientsTable.id))
+            .limit(perPage)
+            .offset(offset);
 
         return {
-            data: clients
-        }
+            data: clients,
+            page,
+            perPage,
+            totalPages
+        };
     }
 
     async save(id: number, data: ClientUpdate): Promise<void> {

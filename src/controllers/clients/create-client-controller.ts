@@ -1,34 +1,17 @@
-import type { FastifyRequest, FastifyReply, FastifyInstance } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import type { ClientRepository } from "../../databases/repositories/client-repository";
+import { createClientSchema, CreateClientSchema } from "../../schemas/clients-schema";
 import type { Controller } from "../controller";
-import type { CreateUserSchema } from "../../schemas/users-schema";
-import { genSaltSync, hashSync } from "bcrypt-ts";
-import type { UserRepository } from "../../databases/repositories/user-repository";
-import { ExistingEntityError } from "../../errors/existing-entity-error";
 
-export class CreateUserController implements Controller {
-    constructor(private readonly userRepository: UserRepository) {}
+export class CreateClientController implements Controller {
+    constructor(private readonly clientRepository: ClientRepository) {}
 
-    async handle (request: FastifyRequest<{ Body: CreateUserSchema }>, reply: FastifyReply){
-        const { name, password, email, cpf, role } = request.body
+    async handle (request: FastifyRequest, reply: FastifyReply){
+        const { name, description, isActive } = createClientSchema.parse(request.body)
 
         try {
-            const existingUserWithByEmail = await this.userRepository.findByEmail(email)
-
-            if(existingUserWithByEmail.user) {
-                throw new ExistingEntityError('This email already exists.')
-            }
-
-            const existingUserWithByCPF = await this.userRepository.findByCPF(cpf)
-
-            if(existingUserWithByCPF.user) {
-                throw new ExistingEntityError('This cpf already exists.')
-            }
-
-            const salt = genSaltSync(10);
-            const passwordHashed = hashSync(password, salt);
-
-            const result = await this.userRepository.create({
-                cpf, email, name, role, password: passwordHashed, 
+            const result = await this.clientRepository.create({
+                name, description, isActive 
             })
 
             return reply.status(201).send({

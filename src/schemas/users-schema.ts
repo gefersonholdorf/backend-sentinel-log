@@ -5,6 +5,7 @@ export const createUserSchema = z.object({
     cpf: z.string(),
     email: z.email(),
     password: z.string(),
+    clientId: z.number().nullable(),
     role: z.enum(['super_admin', 'admin', 'member'])
 })
 

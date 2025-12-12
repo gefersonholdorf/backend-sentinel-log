@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { compareSync } from "bcrypt-ts";
-import type { LoginSchema } from "../../schemas/users-schema";
+import { loginSchema, type LoginSchema } from "../../schemas/users-schema";
 import type { Controller } from "../controller";
 import type { UserRepository } from "../../databases/repositories/user-repository";
 import { CredentialInvalidError } from "../../errors/credential-invalid-error";
@@ -11,8 +11,8 @@ export class LoginController implements Controller {
         private readonly app: FastifyInstance
     ) { }
 
-    async handle(request: FastifyRequest<{ Body: LoginSchema }>, reply: FastifyReply) {
-        const { email, password } = request.body
+    async handle(request: FastifyRequest, reply: FastifyReply) {
+        const { email, password } = loginSchema.parse(request.body)
 
         try {
             const existingUser = await this.userRepository.findByEmail(email)
