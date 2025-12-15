@@ -7,6 +7,9 @@ import { createClientRoute } from "./clients/create-client-route";
 import { updateClientRoute } from "./clients/update-client-route";
 import { inactiveClientRoute } from "./clients/inactive-client-route";
 import { fetchClientsRoute } from "./clients/fetch-clients-route";
+import { createApiRoute } from "./apis/create-api-route";
+import { updateApiRoute } from "./apis/update-api-route";
+import { inactiveApiRoute } from "./apis/inactive-api-route";
 
 export const routes: FastifyPluginCallbackZod = (app) => {
     app.register(healthRoute)
@@ -20,4 +23,8 @@ export const routes: FastifyPluginCallbackZod = (app) => {
     app.register(updateClientRoute)
     app.register(inactiveClientRoute)
     app.register(fetchClientsRoute)
+
+    app.register(createApiRoute)
+    app.register(updateApiRoute)
+    app.register(inactiveApiRoute)
 }

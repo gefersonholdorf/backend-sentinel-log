@@ -1,0 +1,1 @@
+ALTER TABLE `apis` MODIFY COLUMN `expires_in` timestamp NOT NULL;

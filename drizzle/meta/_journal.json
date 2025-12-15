@@ -8,6 +8,20 @@
       "when": 1765475246877,
       "tag": "0000_ordinary_omega_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1765568792680,
+      "tag": "0001_neat_impossible_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1765809826590,
+      "tag": "0002_brainy_aaron_stack",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, serial, varchar, boolean, timestamp } from 'drizzle-orm/mysql-core';
+import { int, mysqlEnum, mysqlTable, varchar, boolean, timestamp } from 'drizzle-orm/mysql-core';
 
 export const clientsTable = mysqlTable('clients', {
   id: int('id').primaryKey().autoincrement(),
@@ -30,4 +30,17 @@ export const usersTable = mysqlTable('users', {
   .notNull()
   .defaultNow()
   .onUpdateNow(),
+});
+
+export const apisTable = mysqlTable('apis', {
+  id: int('id').primaryKey().autoincrement(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: varchar('description', { length: 255 }).notNull(),
+  clientId: int('client_id').references(() => clientsTable.id, { onDelete: "restrict" }).notNull(),
+  token: varchar('token', { length: 255 }).notNull(),
+  expiresIn: timestamp('expires_in').notNull(),
+  urlCallbackStatus: varchar('url_callback_status', { length: 255 }).notNull(),
+  isActive: boolean('is_active').notNull().default(true),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 });
