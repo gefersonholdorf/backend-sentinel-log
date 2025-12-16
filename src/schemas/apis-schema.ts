@@ -4,7 +4,6 @@ export const createApiSchema = z.object({
     name: z.string(),
     description: z.string(),
     clientId: z.number(),
-    token: z.string(),
     urlCallbackStatus: z.url(),
     isActive: z.boolean()
 })

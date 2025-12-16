@@ -4,7 +4,7 @@ import z from "zod";
 import { UpdateClientController } from "../../controllers/clients/update-client-by-id-controller";
 import { db } from "../../databases/drizzle/drizzle-client";
 import { DrizzleClientRepository } from "../../databases/drizzle/repositories/drizzle-client-repository";
-import { isAuthenticate } from "../../middlewares/is-authenticate";
+import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 import { isAuthorized } from "../../middlewares/is-authorized";
 import { createClientSchema } from "../../schemas/clients-schema";
 import z4 from "zod/v4";

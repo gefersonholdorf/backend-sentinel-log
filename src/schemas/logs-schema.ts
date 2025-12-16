@@ -2,8 +2,6 @@ import z from "zod";
 
 export const createLogSchema = z.object({
     message: z.string(),
-    clientId: z.number(),
-    apiId: z.number(),
     ip: z.string(),
     component: z.string(),
     action: z.string(),

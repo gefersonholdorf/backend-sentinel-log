@@ -1,4 +1,4 @@
-import type { FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { ApiRepository } from "../../databases/repositories/api-repository";
 import { createApiSchema } from "../../schemas/apis-schema";
 import type { Controller } from "../controller";
@@ -8,11 +8,12 @@ import { EntityNotFoundError } from "../../errors/entity-not-found-error";
 export class CreateApiController implements Controller {
     constructor(
         private readonly apiRepository: ApiRepository,
-        private readonly clientRepository: ClientRepository
+        private readonly clientRepository: ClientRepository,
+        private readonly app: FastifyInstance
     ) {}
 
     async handle (request: FastifyRequest, reply: FastifyReply){
-        const { name, description, isActive, clientId, token, urlCallbackStatus } = createApiSchema.parse(request.body)
+        const { name, description, isActive, clientId, urlCallbackStatus } = createApiSchema.parse(request.body)
 
         try {
 
@@ -26,7 +27,16 @@ export class CreateApiController implements Controller {
             expiresIn.setMonth(expiresIn.getMonth() + 3)
 
             const result = await this.apiRepository.create({
-                name, description, isActive, clientId, expiresIn, token, urlCallbackStatus,  
+                name, description, isActive, clientId, expiresIn, urlCallbackStatus,  
+            })
+
+            const token = await this.app.jwt.sign({
+                clientId: clientId,
+                apiId: result.id
+            })
+
+            await this.apiRepository.save(result.id, {
+                name, description, isActive, urlCallbackStatus, expiresIn, token
             })
 
             return reply.status(201).send({

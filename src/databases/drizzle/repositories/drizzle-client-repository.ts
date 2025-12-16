@@ -1,4 +1,4 @@
-import { desc, eq, like, count, asc, sql } from "drizzle-orm";
+import { desc, eq, like, count, asc, sql, inArray } from "drizzle-orm";
 import type { MySql2Database } from "drizzle-orm/mysql2";
 import type { Client, ClientInsert, ClientRepository, ClientsPaginationParams, ClientUpdate } from "../../repositories/client-repository";
 import { apisTable, clientsTable } from "../schemas/schema";
@@ -82,5 +82,15 @@ export class DrizzleClientRepository implements ClientRepository {
         await this.db.update(clientsTable)
                     .set(data)
                     .where(eq(clientsTable.id, id));
+    }
+
+    async findByIds(ids: number[]) {
+        return await this.db
+            .select({
+                id: clientsTable.id,
+                name: clientsTable.name
+            })
+            .from(clientsTable)
+            .where(inArray(clientsTable.id, ids))
     }
 }

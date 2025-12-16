@@ -4,7 +4,7 @@ import z from "zod";
 import { FetchApisController } from "../../controllers/apis/fetch-apis-controller";
 import { db } from "../../databases/drizzle/drizzle-client";
 import { DrizzleApiRepository } from "../../databases/drizzle/repositories/drizzle-api-repository";
-import { isAuthenticate } from "../../middlewares/is-authenticate";
+import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 import { isAuthorized } from "../../middlewares/is-authorized";
 import { apisPaginationParams } from "../../schemas/apis-schema";
 

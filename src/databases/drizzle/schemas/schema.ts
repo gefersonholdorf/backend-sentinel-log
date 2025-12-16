@@ -37,7 +37,7 @@ export const apisTable = mysqlTable('apis', {
   name: varchar('name', { length: 255 }).notNull(),
   description: varchar('description', { length: 255 }).notNull(),
   clientId: int('client_id').references(() => clientsTable.id, { onDelete: "restrict" }).notNull(),
-  token: varchar('token', { length: 255 }).notNull(),
+  token: varchar('token', { length: 255 }),
   expiresIn: timestamp('expires_in').notNull(),
   urlCallbackStatus: varchar('url_callback_status', { length: 255 }).notNull(),
   isActive: boolean('is_active').notNull().default(true),

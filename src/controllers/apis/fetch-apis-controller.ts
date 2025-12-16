@@ -5,7 +5,7 @@ import type { ApiRepository } from "../../databases/repositories/api-repository"
 import { authProfileSchema } from "../../schemas/auth-profile-schema";
 
 export class FetchApisController implements Controller {
-    constructor(private readonly ApiRepository: ApiRepository) {}
+    constructor(private readonly apiRepository: ApiRepository) {}
 
     async handle (request: FastifyRequest, reply: FastifyReply){
 
@@ -17,7 +17,7 @@ export class FetchApisController implements Controller {
         clientId = authClientId ? authClientId : paginationClientId
 
         try {
-            const result = await this.ApiRepository.findAll({page, perPage, filter, orderBy, clientId})
+            const result = await this.apiRepository.findAll({page, perPage, filter, orderBy, clientId})
 
             return reply.status(200).send({
                 data: result.data,

@@ -1,4 +1,4 @@
-import { desc, eq, like, count, asc, sql, and } from "drizzle-orm";
+import { desc, eq, like, count, asc, sql, and, inArray } from "drizzle-orm";
 import type { MySql2Database } from "drizzle-orm/mysql2";
 import { apisTable } from "../schemas/schema";
 import type { Api, ApiInsert, ApiRepository, ApisPaginationParams, ApiUpdate } from "../../repositories/api-repository";
@@ -70,5 +70,15 @@ export class DrizzleApiRepository implements ApiRepository {
         await this.db.update(apisTable)
                 .set(data)
                 .where(eq(apisTable.id, id));
+    }
+
+    async findByIds(ids: number[]) {
+        return await this.db
+            .select({
+                id: apisTable.id,
+                name: apisTable.name
+            })
+            .from(apisTable)
+            .where(inArray(apisTable.id, ids))
     }
 }

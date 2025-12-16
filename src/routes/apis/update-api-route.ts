@@ -2,7 +2,7 @@ import type { FastifyPluginCallbackZod } from "fastify-type-provider-zod";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import z4 from "zod/v4";
-import { isAuthenticate } from "../../middlewares/is-authenticate";
+import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 import { isAuthorized } from "../../middlewares/is-authorized";
 import { DrizzleApiRepository } from "../../databases/drizzle/repositories/drizzle-api-repository";
 import { UpdateApiController } from "../../controllers/apis/update-api-by-id-controller";

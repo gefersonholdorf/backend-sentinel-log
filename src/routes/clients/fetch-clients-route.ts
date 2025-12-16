@@ -4,7 +4,7 @@ import z from "zod";
 import { FetchClientController } from "../../controllers/clients/fetch-clients-controller";
 import { db } from "../../databases/drizzle/drizzle-client";
 import { DrizzleClientRepository } from "../../databases/drizzle/repositories/drizzle-client-repository";
-import { isAuthenticate } from "../../middlewares/is-authenticate";
+import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 import { isAuthorized } from "../../middlewares/is-authorized";
 import { clientsPaginationParams } from "../../schemas/clients-schema";
 

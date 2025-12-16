@@ -1,0 +1,1 @@
+ALTER TABLE `apis` MODIFY COLUMN `token` varchar(255);

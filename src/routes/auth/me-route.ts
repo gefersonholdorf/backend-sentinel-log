@@ -4,7 +4,7 @@ import z from "zod";
 import { MeController } from "../../controllers/auth/me-controller";
 import { db } from "../../databases/drizzle/drizzle-client";
 import { DrizzleUserRepository } from "../../databases/drizzle/repositories/drizzle-user-repository";
-import { isAuthenticate } from "../../middlewares/is-authenticate";
+import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 
 export const meRoute: FastifyPluginCallbackZod = (app) => {
     const userRepository = new DrizzleUserRepository(db)

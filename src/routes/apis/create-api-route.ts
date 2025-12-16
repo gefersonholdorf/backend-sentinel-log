@@ -1,7 +1,7 @@
 import type { FastifyPluginCallbackZod } from "fastify-type-provider-zod";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
-import { isAuthenticate } from "../../middlewares/is-authenticate";
+import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 import { isAuthorized } from "../../middlewares/is-authorized";
 import { DrizzleApiRepository } from "../../databases/drizzle/repositories/drizzle-api-repository";
 import { db } from "../../databases/drizzle/drizzle-client";
@@ -12,7 +12,7 @@ import { DrizzleClientRepository } from "../../databases/drizzle/repositories/dr
 export const createApiRoute: FastifyPluginCallbackZod = (app) => {
     const apiRepository = new DrizzleApiRepository(db)
     const clientRepository = new DrizzleClientRepository(db)
-    const createApiController = new CreateApiController(apiRepository, clientRepository)
+    const createApiController = new CreateApiController(apiRepository, clientRepository, app)
 
     app.withTypeProvider<ZodTypeProvider>().post('/apis', {
         preHandler: [isAuthenticate(app), isAuthorized(['super_admin', 'admin'])],

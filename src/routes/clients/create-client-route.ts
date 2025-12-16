@@ -5,7 +5,7 @@ import { DrizzleClientRepository } from "../../databases/drizzle/repositories/dr
 import { db } from "../../databases/drizzle/drizzle-client";
 import { CreateClientController } from "../../controllers/clients/create-client-controller";
 import { createClientSchema } from "../../schemas/clients-schema";
-import { isAuthenticate } from "../../middlewares/is-authenticate";
+import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 import { isAuthorized } from "../../middlewares/is-authorized";
 
 export const createClientRoute: FastifyPluginCallbackZod = (app) => {

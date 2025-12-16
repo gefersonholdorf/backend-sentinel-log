@@ -21,4 +21,8 @@ export interface ClientRepository {
         totalPages: number;
     }>
     save(id: number, data: ClientUpdate): Promise<void>
+    findByIds(ids: number[]): Promise<{
+        id: number;
+        name: string;
+    }[]>
 }
