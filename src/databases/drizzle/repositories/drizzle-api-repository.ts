@@ -1,4 +1,4 @@
-import { desc, eq, like, count, asc, sql } from "drizzle-orm";
+import { desc, eq, like, count, asc, sql, and } from "drizzle-orm";
 import type { MySql2Database } from "drizzle-orm/mysql2";
 import { apisTable } from "../schemas/schema";
 import type { Api, ApiInsert, ApiRepository, ApisPaginationParams, ApiUpdate } from "../../repositories/api-repository";
@@ -13,13 +13,13 @@ export class DrizzleApiRepository implements ApiRepository {
     }
 
     async findById(id: number): Promise<{ api: Api | null; }> {
-        const Api = await this.db.select().from(apisTable).where(eq(apisTable.id, id))
+        const api = await this.db.select().from(apisTable).where(eq(apisTable.id, id))
 
-        if (Api.length === 0) {
+        if (api.length === 0) {
             return { api: null };
         }
 
-        return { api: Api[0] }
+        return { api: api[0] }
     }
 
     async findAll(pagination: ApisPaginationParams): Promise<{
@@ -28,28 +28,38 @@ export class DrizzleApiRepository implements ApiRepository {
         perPage: number;
         totalPages: number;
     }> {
-        const { page = 1, perPage = 10, orderBy = 'desc', filter } = pagination;
+        const { page = 1, perPage = 10, orderBy = 'desc', filter, clientId } = pagination;
         const offset = (page - 1) * perPage;
+
+
+        const whereClause = and(
+        filter && filter.trim() !== ''
+            ? like(apisTable.name, `%${filter}%`)
+            : undefined,
+        clientId
+            ? eq(apisTable.clientId, clientId)
+            : undefined
+    );
 
         const totalResult = await this.db
             .select({ total: sql<number>`COUNT(*)` })
             .from(apisTable)
-            .where(filter && filter.trim() !== '' ? like(apisTable.name, `%${filter}%`) : undefined);
+            .where(whereClause);
 
         const totalItems = Number(totalResult[0].total);
-        console.log(totalResult)
+
         const totalPages = Math.ceil(totalItems / perPage);
 
-        const Apis = await this.db
+        const apis = await this.db
             .select()
             .from(apisTable)
-            .where(filter ? like(apisTable.name, `%${filter}%`) : undefined)
+            .where(whereClause)
             .orderBy(desc(apisTable.id))
             .limit(perPage)
             .offset(offset);
 
         return {
-            data: Apis,
+            data: apis,
             page,
             perPage,
             totalPages
@@ -58,7 +68,7 @@ export class DrizzleApiRepository implements ApiRepository {
 
     async save(id: number, data: ApiUpdate): Promise<void> {
         await this.db.update(apisTable)
-                    .set(data)
-                    .where(eq(apisTable.id, id));
+                .set(data)
+                .where(eq(apisTable.id, id));
     }
 }

@@ -20,7 +20,7 @@ export const apisPaginationParams = z.object({
     page: z.coerce.number().optional(),
     perPage: z.coerce.number().optional(),
     orderBy: z.enum(['desc', 'asc']).optional(),
-    clientId: z.number(),
+    clientId: z.coerce.number().optional(),
     filter: z.string().optional()
 })
 

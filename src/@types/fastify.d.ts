@@ -4,7 +4,8 @@ declare module "fastify" {
 	interface FastifyRequest {
 		profile: {
 			id: number;
-			role: 'super_admin' | 'admin' | 'member'
+			role: 'super_admin' | 'admin' | 'member';
+			clientId: number | null;
 		};
 	}
 }

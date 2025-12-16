@@ -9,6 +9,7 @@ export interface ApisPaginationParams {
     perPage?: number
     orderBy?: 'asc' | 'desc'
     filter?: string
+    clientId?: number
 }
 
 export interface ApiRepository {

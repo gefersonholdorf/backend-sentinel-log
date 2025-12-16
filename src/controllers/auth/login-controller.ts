@@ -29,7 +29,8 @@ export class LoginController implements Controller {
 
             const token = await this.app.jwt.sign({
                 sub: existingUser.user.id,
-                role: existingUser.user.role
+                role: existingUser.user.role,
+                clientId: existingUser.user.clientId
             }, {
                 expiresIn: '10m'
             })

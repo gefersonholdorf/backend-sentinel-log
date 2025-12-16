@@ -37,7 +37,7 @@ export class DrizzleClientRepository implements ClientRepository {
             .where(filter && filter.trim() !== '' ? like(clientsTable.name, `%${filter}%`) : undefined);
 
         const totalItems = Number(totalResult[0].total);
-        console.log(totalResult)
+
         const totalPages = Math.ceil(totalItems / perPage);
 
         const clients = await this.db
