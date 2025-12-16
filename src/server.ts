@@ -7,6 +7,7 @@ import { routes } from "./routes/routes";
 import fastifyJwt from "@fastify/jwt";
 import { env } from "./env";
 import { registerErrorHandler } from "./middlewares/error-handler";
+import { RabbitMQServer } from "./rabbitmq";
 
 export const server = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -49,6 +50,12 @@ server.register(fastifyApiReference, {
 
 server.register(fastifyJwt, {
 	secret: env.JWT_API_KEY,
+})
+
+export const rabbitMQClient = new RabbitMQServer(env.RABBITMQ_URL, 'sentinel.exchange', 'topic')
+
+server.addHook("onReady", async() => {
+	await rabbitMQClient.start()
 })
 
 server.register(routes, {prefix: 'api/v1/'})

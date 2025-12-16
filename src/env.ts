@@ -5,7 +5,8 @@ const envSchema = z.object({
     PORT: z.coerce.number(),
     JWT_API_KEY: z.string(),
     DATABASE_URL: z.url(),
-    MONGO_URL: z.url()
+    MONGO_URL: z.url(),
+    RABBITMQ_URL: z.url()
 })
 
 export const env = envSchema.parse(process.env)

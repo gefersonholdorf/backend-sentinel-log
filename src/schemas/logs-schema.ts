@@ -9,7 +9,6 @@ export const createLogSchema = z.object({
     action: z.string(),
     affectedRecordID: z.string(),
     user: z.string(),
-    date: z.date(),
 })
 
 export type CreateLogSchema = z.infer<typeof createLogSchema>
