@@ -13,6 +13,7 @@ const clientSchema = z.object({
     name: z.string(),
     description: z.string(),
     isActive: z.boolean(),
+    apis: z.number(),
     createdAt: z.date(),
     updatedAt: z.date(),
 })

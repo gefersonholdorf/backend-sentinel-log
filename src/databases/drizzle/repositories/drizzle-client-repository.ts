@@ -1,7 +1,7 @@
 import { desc, eq, like, count, asc, sql } from "drizzle-orm";
 import type { MySql2Database } from "drizzle-orm/mysql2";
 import type { Client, ClientInsert, ClientRepository, ClientsPaginationParams, ClientUpdate } from "../../repositories/client-repository";
-import { clientsTable } from "../schemas/schema";
+import { apisTable, clientsTable } from "../schemas/schema";
 
 export class DrizzleClientRepository implements ClientRepository {
     constructor(private readonly db: MySql2Database) {}
@@ -41,12 +41,34 @@ export class DrizzleClientRepository implements ClientRepository {
         const totalPages = Math.ceil(totalItems / perPage);
 
         const clients = await this.db
-            .select()
-            .from(clientsTable)
-            .where(filter ? like(clientsTable.name, `%${filter}%`) : undefined)
-            .orderBy(desc(clientsTable.id))
-            .limit(perPage)
-            .offset(offset);
+    .select({
+            id: clientsTable.id,
+            name: clientsTable.name,
+            description: clientsTable.description,
+            isActive: clientsTable.isActive,
+            apis: sql<number>`COUNT(${apisTable.id})`,
+            createdAt: clientsTable.createdAt,
+            updatedAt: clientsTable.updatedAt,
+        })
+        .from(clientsTable)
+        .leftJoin(
+            apisTable,
+            eq(apisTable.clientId, clientsTable.id)
+        )
+        .where(
+            filter ? like(clientsTable.name, `%${filter}%`) : undefined
+        )
+        .groupBy(
+            clientsTable.id,
+            clientsTable.name,
+            clientsTable.description,
+            clientsTable.isActive,
+            clientsTable.createdAt,
+            clientsTable.updatedAt
+        )
+        .orderBy(desc(clientsTable.id))
+        .limit(perPage)
+        .offset(offset);
 
         return {
             data: clients,

@@ -30,7 +30,7 @@ export const fetchApisRoute: FastifyPluginCallbackZod = (app) => {
     app.withTypeProvider<ZodTypeProvider>().get('/apis', {
         preHandler: [isAuthenticate(app), isAuthorized(['super_admin', 'admin', 'member'])],
         schema: {
-            tags: ['Api'],
+            tags: ['Apis'],
             summary: 'Fetch Apis',
             querystring: apisPaginationParams,
             response: {
