@@ -17,6 +17,7 @@ server.setSerializerCompiler(serializerCompiler)
 registerErrorHandler(server)
 
 server.register(fastifyCors, {
+	methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     origin: true
 })
 

@@ -24,4 +24,13 @@ export class MongoLogRepository implements LogRepository {
             data: result
         }
     }
+
+    async totalCount(): Promise<number> {
+        const date = new Date()
+        const today = date.getDay()
+
+        const count = await LogModel.countDocuments({ date: { $gte: new Date(date.setDate(today)) } })
+
+        return count
+    }
 }

@@ -93,4 +93,12 @@ export class DrizzleClientRepository implements ClientRepository {
             .from(clientsTable)
             .where(inArray(clientsTable.id, ids))
     }
+
+    async totalCount(): Promise<number> {
+        const result = await this.db
+            .select({ total: sql<number>`COUNT(*)` })
+            .from(clientsTable);
+
+        return Number(result[0].total)
+    }
 }

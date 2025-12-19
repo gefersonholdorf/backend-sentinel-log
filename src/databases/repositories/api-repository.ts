@@ -26,4 +26,9 @@ export interface ApiRepository {
         id: number;
         name: string;
     }[]>
+    totalCount(): Promise<{ 
+        total: number
+        totalActive: number
+        totalInactive: number
+    }>
 }

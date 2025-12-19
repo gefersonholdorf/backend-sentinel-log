@@ -25,4 +25,5 @@ export interface ClientRepository {
         id: number;
         name: string;
     }[]>
+    totalCount(): Promise<number>
 }

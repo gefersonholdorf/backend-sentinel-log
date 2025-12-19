@@ -9,4 +9,5 @@ export interface LogRepository {
     findByClientId(params: LogPaginationParams): Promise<{
         data: LogDocument[]
     }>
+    totalCount(): Promise<number>
 }

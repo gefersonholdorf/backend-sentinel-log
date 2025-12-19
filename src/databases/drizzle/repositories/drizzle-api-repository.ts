@@ -81,4 +81,24 @@ export class DrizzleApiRepository implements ApiRepository {
             .from(apisTable)
             .where(inArray(apisTable.id, ids))
     }
+
+    async totalCount(): Promise<{ 
+        total: number
+        totalActive: number
+        totalInactive: number
+    }> {
+        const totalResult = await this.db
+            .select({
+                total: sql<number>`COUNT(*)`,
+                totalActive: sql<number>`SUM(CASE WHEN ${apisTable.isActive} = 1 THEN 1 ELSE 0 END)`,
+                totalInactive: sql<number>`SUM(CASE WHEN ${apisTable.isActive} = 0 THEN 1 ELSE 0 END)`
+            })
+            .from(apisTable);
+
+        return {
+            total: Number(totalResult[0].total),
+            totalActive: Number(totalResult[0].totalActive),
+            totalInactive: Number(totalResult[0].totalInactive)
+        }
+    }
 }
