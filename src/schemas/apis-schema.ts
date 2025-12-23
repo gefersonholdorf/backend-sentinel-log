@@ -23,11 +23,17 @@ export const apisPaginationParams = z.object({
     filter: z.string().optional()
 })
 
+export const renewTokenApiSchema = z.object({
+    expiresIn: z.date()
+})
+
 export type CreateApiSchema = z.infer<typeof createApiSchema>
 
 export type UpdateApiSchema = z.infer<typeof updateApiSchema>
 
 export type ApisPaginationParams = z.infer<typeof apisPaginationParams>
+
+export type RenewTokenApiSchema = z.infer<typeof renewTokenApiSchema>
 
 
 

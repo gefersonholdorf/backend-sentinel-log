@@ -1,6 +1,6 @@
 import { desc, eq, like, count, asc, sql, and, inArray } from "drizzle-orm";
 import type { MySql2Database } from "drizzle-orm/mysql2";
-import { apisTable } from "../schemas/schema";
+import { apisTable, clientsTable } from "../schemas/schema";
 import type { Api, ApiInsert, ApiRepository, ApisPaginationParams, ApiUpdate } from "../../repositories/api-repository";
 
 export class DrizzleApiRepository implements ApiRepository {
@@ -51,8 +51,23 @@ export class DrizzleApiRepository implements ApiRepository {
         const totalPages = Math.ceil(totalItems / perPage);
 
         const apis = await this.db
-            .select()
+            .select({id: apisTable.id,
+                name: apisTable.name,
+                description: apisTable.description,
+                isActive: apisTable.isActive,
+                createdAt: apisTable.createdAt,
+                updatedAt: apisTable.updatedAt,
+                clientId: apisTable.clientId,
+                clientName: clientsTable.name,
+                token: apisTable.token,
+                expiresIn: apisTable.expiresIn,
+                urlCallbackStatus: apisTable.urlCallbackStatus,
+            })
             .from(apisTable)
+            .leftJoin(
+                clientsTable,
+                eq(apisTable.clientId, clientsTable.id)
+            )
             .where(whereClause)
             .orderBy(desc(apisTable.id))
             .limit(perPage)

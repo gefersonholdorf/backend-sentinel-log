@@ -16,7 +16,8 @@ const apiSchema = z.object({
     createdAt: z.date(),
     updatedAt: z.date(),
     clientId: z.number(),
-    token: z.string(),
+    clientName: z.string(),
+    token: z.string().nullable(),
     expiresIn: z.date(),
     urlCallbackStatus: z.string()
 })
