@@ -24,7 +24,7 @@ export const apisPaginationParams = z.object({
 })
 
 export const renewTokenApiSchema = z.object({
-    expiresIn: z.date()
+    expiresIn: z.coerce.date()
 })
 
 export type CreateApiSchema = z.infer<typeof createApiSchema>

@@ -28,6 +28,7 @@ export class RenewTokenApiByIdController implements Controller {
 
             api.api.expiresIn = expiresIn
             api.api.token = token
+            api.api.isActive = true
                         
             await this.apiRepository.save(id, api.api)
 

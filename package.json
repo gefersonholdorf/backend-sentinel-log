@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx --env-file .env src/index.ts",
+    "dev": "tsx --watch --env-file .env src/index.ts",
     "seed": "tsx --env-file .env src/databases/drizzle/seed.ts",
     "create-mongo": "tsx --env-file .env src/databases/mongo/script-create-collection.ts",
     "homol": "tsx --env-file .env src/index.ts",

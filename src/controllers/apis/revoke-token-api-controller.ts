@@ -18,6 +18,7 @@ export class RevokeTokenApiByIdController implements Controller {
 
             api.api.isActive = false
             api.api.token = null
+            api.api.expiresIn = new Date()
                         
             await this.apiRepository.save(id, api.api)
 
