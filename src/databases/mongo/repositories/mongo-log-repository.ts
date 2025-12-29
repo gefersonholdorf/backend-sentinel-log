@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import type { LogPaginationParams, LogRepository } from "../../repositories/log-repository";
 import { LogModel, type Log, type LogDocument } from "../schemas/mongo-logs-model";
 
@@ -7,21 +8,54 @@ export class MongoLogRepository implements LogRepository {
     }
 
     async findByClientId(params: LogPaginationParams): Promise<{
-            data: LogDocument[]
+            data: LogDocument[],
+            nextCursor?: string | null
         }> {
 
-        const { clientId } = params
+        const {
+            clientId,
+            limit,
+            cursor,
+            filter,
+            apiId,
+            dateFrom,
+            dateTo
+        } = params
 
-        const filter: Record<string, any> = {}
+        const query: Record<string, any> = {}
 
-        if (clientId !== null && clientId !== undefined) {
-            filter.clientId = clientId
+        if (clientId !== undefined) query.clientId = clientId
+        if (apiId !== undefined) query.apiId = apiId
+
+        if (cursor) {
+            query._id = { $lt: new Types.ObjectId(cursor) }
         }
 
-        const result = await LogModel.find(filter)
+        if (filter) {
+            query.message = { $regex: filter, $options: "i" }
+        }
+
+        if (dateFrom || dateTo) {
+            query.date = {}
+            if (dateFrom) query.date.$gte = dateFrom
+            if (dateTo) query.date.$lte = dateTo
+        }
+
+        const result = await LogModel
+            .find(query)
+            .sort({ _id: -1 })
+            .limit(limit + 1)
+
+        const hasNextPage = result.length > limit
+        const data = hasNextPage ? result.slice(0, limit) : result
+
+        const nextCursor = hasNextPage
+            ? data[data.length - 1]._id.toString()
+            : null
 
         return {
-            data: result
+            data,
+            nextCursor
         }
     }
 

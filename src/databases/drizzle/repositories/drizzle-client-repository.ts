@@ -101,4 +101,16 @@ export class DrizzleClientRepository implements ClientRepository {
 
         return Number(result[0].total)
     }
+
+    async comboboxList(): Promise<{ value: number; label: string; }[]> {
+        const result =  await this.db
+            .select({
+                id: clientsTable.id,
+                name: clientsTable.name
+            })
+            .from(clientsTable)
+            .orderBy(asc(clientsTable.name))
+
+        return result.map(item => ({ value: item.id, label: item.name }))
+    }
 }

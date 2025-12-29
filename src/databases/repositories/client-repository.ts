@@ -26,4 +26,5 @@ export interface ClientRepository {
         name: string;
     }[]>
     totalCount(): Promise<number>
+    comboboxList(): Promise<{ value: number; label: string; }[]>
 }

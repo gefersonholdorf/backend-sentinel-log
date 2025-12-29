@@ -16,6 +16,8 @@ import { fetchLogRoute } from "./logs/fetch-logs-route";
 import { dashboardRoute } from "./dashboard/dashboard-route";
 import { renewTokenApiRoute } from "./apis/renew-token-api-route";
 import { revokeTokenApiRoute } from "./apis/revoke-token-api-route";
+import { ComboboxListController } from "../controllers/clients/combobox-list-controller";
+import { comboboxClientRoute } from "./clients/combobox-clients-route";
 
 export const routes: FastifyPluginCallbackZod = (app) => {
     app.register(healthRoute)
@@ -38,6 +40,7 @@ export const routes: FastifyPluginCallbackZod = (app) => {
     app.register(fetchApisRoute)
     app.register(renewTokenApiRoute)
     app.register(revokeTokenApiRoute)
+    app.register(comboboxClientRoute)
 
     app.register(createLogRoute)
     app.register(fetchLogRoute)
