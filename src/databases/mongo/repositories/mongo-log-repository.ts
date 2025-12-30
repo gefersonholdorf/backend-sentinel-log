@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import type { LogPaginationParams, LogRepository } from "../../repositories/log-repository";
+import type { LogPaginationParams, LogRepository, VolumeLogsAggregation, VolumeLogsTodayResult } from "../../repositories/log-repository";
 import { LogModel, type Log, type LogDocument } from "../schemas/mongo-logs-model";
 
 export class MongoLogRepository implements LogRepository {
@@ -59,12 +59,82 @@ export class MongoLogRepository implements LogRepository {
         }
     }
 
-    async totalCount(): Promise<number> {
-        const date = new Date()
-        const today = date.getDay()
+    async totalCount(clientId: number | null): Promise<number> {
 
-        const count = await LogModel.countDocuments({ date: { $gte: new Date(date.setDate(today)) } })
+    const startOfDay = new Date()
+    startOfDay.setHours(0, 0, 0, 0)
 
-        return count
+
+    const endOfDay = new Date()
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const filter: {
+        date: { $gte: Date; $lte: Date }
+        clientId?: number
+    } = {
+        date: {
+            $gte: startOfDay,
+            $lte: endOfDay
+        }
     }
+
+    if (clientId !== null) {
+        filter.clientId = clientId
+    }
+
+    return LogModel.countDocuments(filter)
+}
+
+    async volumeLogsToday(
+    clientId: number | null
+): Promise<VolumeLogsTodayResult[]> {
+
+    const startOfDay = new Date()
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date()
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const match: {
+        date: { $gte: Date; $lte: Date }
+        clientId?: number
+    } = {
+        date: { $gte: startOfDay, $lte: endOfDay }
+    }
+
+    if (clientId !== null) {
+        match.clientId = clientId
+    }
+
+    const aggregation = await LogModel.aggregate<VolumeLogsAggregation>([
+        { $match: match },
+        {
+            $group: {
+                _id: {
+                    hour: {
+                        $hour: {
+                            date: "$date",
+                            timezone: "-03:00"
+                        }
+                    }
+                },
+                quantity: { $sum: 1 }
+            }
+        }
+    ])
+
+    const quantityByHour = new Map<number, number>(
+        aggregation.map(item => [item._id.hour, item.quantity])
+    )
+
+    const result: VolumeLogsTodayResult[] = Array.from(
+        { length: 24 },
+        (_, hour): VolumeLogsTodayResult => ({
+            hour: `${hour.toString().padStart(2, "0")}:00`,
+            quantity: quantityByHour.get(hour) ?? 0
+        })
+    )
+
+    return result
+}
 }

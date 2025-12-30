@@ -1,6 +1,6 @@
-import { desc, eq, like, count, asc, sql, inArray } from "drizzle-orm";
+import { desc, eq, like, count, asc, sql, inArray, and } from "drizzle-orm";
 import type { MySql2Database } from "drizzle-orm/mysql2";
-import type { Client, ClientInsert, ClientRepository, ClientsPaginationParams, ClientUpdate } from "../../repositories/client-repository";
+import type { Client, ClientFull, ClientInsert, ClientRepository, ClientsPaginationParams, ClientUpdate } from "../../repositories/client-repository";
 import { apisTable, clientsTable } from "../schemas/schema";
 
 export class DrizzleClientRepository implements ClientRepository {
@@ -12,6 +12,35 @@ export class DrizzleClientRepository implements ClientRepository {
         return { id: newClient[0].insertId }
     }
 
+    async findFullClientById(
+    id: number
+): Promise<{ client: ClientFull | null }> {
+
+    const rows = await this.db
+        .select()
+        .from(clientsTable)
+        .leftJoin(
+            apisTable,
+            eq(apisTable.clientId, clientsTable.id)
+        )
+        .where(eq(clientsTable.id, id))
+
+    if (rows.length === 0) {
+        return { client: null }
+    }
+
+    console.log(rows)
+
+    const client: ClientFull = {
+        ...rows[0].clients,
+        apis: rows
+            .filter(row => row.apis !== null)
+            .map(row => row.apis!)
+    }
+
+    return { client }
+}
+
     async findById(id: number): Promise<{ client: Client | null; }> {
         const client = await this.db.select().from(clientsTable).where(eq(clientsTable.id, id))
 
@@ -22,7 +51,7 @@ export class DrizzleClientRepository implements ClientRepository {
         return { client: client[0] }
     }
 
-    async findAll(pagination: ClientsPaginationParams): Promise<{
+    async findAll(pagination: ClientsPaginationParams, clientId: number | undefined): Promise<{
         data: Client[];
         page: number;
         perPage: number;
@@ -34,7 +63,16 @@ export class DrizzleClientRepository implements ClientRepository {
         const totalResult = await this.db
             .select({ total: sql<number>`COUNT(*)` })
             .from(clientsTable)
-            .where(filter && filter.trim() !== '' ? like(clientsTable.name, `%${filter}%`) : undefined);
+            .where(
+            and(
+                filter && filter.trim() !== ''
+                    ? like(clientsTable.name, `%${filter}%`)
+                    : undefined,
+                clientId !== undefined
+                    ? eq(clientsTable.id, clientId)
+                    : undefined
+            )
+        );
 
         const totalItems = Number(totalResult[0].total);
 
@@ -56,7 +94,14 @@ export class DrizzleClientRepository implements ClientRepository {
             eq(apisTable.clientId, clientsTable.id)
         )
         .where(
-            filter ? like(clientsTable.name, `%${filter}%`) : undefined
+            and(
+                filter
+                    ? like(clientsTable.name, `%${filter}%`)
+                    : undefined,
+                clientId !== undefined
+                    ? eq(clientsTable.id, clientId)
+                    : undefined
+            )
         )
         .groupBy(
             clientsTable.id,

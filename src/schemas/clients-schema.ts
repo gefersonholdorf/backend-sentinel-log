@@ -19,11 +19,17 @@ export const clientsPaginationParams = z.object({
     filter: z.string().optional()
 })
 
+export const getClientByIdParam = z.object({
+    id: z.coerce.number()
+})
+
 export type CreateClientSchema = z.infer<typeof createClientSchema>
 
 export type UpdateClientSchema = z.infer<typeof updateClientSchema>
 
 export type ClientsPaginationParams = z.infer<typeof clientsPaginationParams>
+
+export type GetClientByIdParam = z.infer<typeof getClientByIdParam>
 
 
 

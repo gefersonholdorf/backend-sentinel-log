@@ -10,11 +10,24 @@ export interface LogPaginationParams {
     dateTo?: Date
 }
 
+export interface VolumeLogsAggregation {
+    _id: {
+        hour: number
+    }
+    quantity: number
+}
+
+export interface VolumeLogsTodayResult {
+    hour: string
+    quantity: number
+}
+
 export interface LogRepository {
     create(data: LogDocument): Promise<void>
     findByClientId(params: LogPaginationParams): Promise<{
         data: LogDocument[]
         nextCursor?: string | null
     }>
-    totalCount(): Promise<number>
+    totalCount(clientId: number | null): Promise<number>
+    volumeLogsToday(clientId: number | null): Promise<VolumeLogsTodayResult[]>
 }

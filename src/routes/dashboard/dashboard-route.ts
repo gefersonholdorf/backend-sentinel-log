@@ -7,6 +7,10 @@ import { DrizzleApiRepository } from "../../databases/drizzle/repositories/drizz
 import { DashboardController } from "../../controllers/dashboard/dashboard-controller";
 import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 
+export const dashboardQueryParams = z.object({
+        clientId: z.coerce.number().optional()
+    })
+
 export const dashboardRoute: FastifyPluginCallbackZod = async (app) => {
     const clientRepository = new DrizzleClientRepository(db)
     const logRepository = new MongoLogRepository()
@@ -19,13 +23,18 @@ export const dashboardRoute: FastifyPluginCallbackZod = async (app) => {
         schema: {
             summary: 'Get Dashboard Info',
             tags: ['Dashboard'],
+            querystring: dashboardQueryParams,
             response: {
                 200: z.object({
                     totalClients: z.number(),
                     totalApis: z.number(),
                     totalApisActive: z.number(),
                     totalApisInactive: z.number(),
-                    totalLogsToday: z.number()
+                    totalLogsToday: z.number(),
+                    volumeLogsTodayData: z.array(z.object({
+                        hour: z.string(),
+                        quantity: z.number()
+                    }))
                 }),
                 500: z.object({
                     message: z.string()

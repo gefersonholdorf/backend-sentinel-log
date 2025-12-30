@@ -97,7 +97,7 @@ export class DrizzleApiRepository implements ApiRepository {
             .where(inArray(apisTable.id, ids))
     }
 
-    async totalCount(): Promise<{ 
+    async totalCount(clientId: number | null): Promise<{ 
         total: number
         totalActive: number
         totalInactive: number
@@ -108,7 +108,12 @@ export class DrizzleApiRepository implements ApiRepository {
                 totalActive: sql<number>`SUM(CASE WHEN ${apisTable.isActive} = 1 THEN 1 ELSE 0 END)`,
                 totalInactive: sql<number>`SUM(CASE WHEN ${apisTable.isActive} = 0 THEN 1 ELSE 0 END)`
             })
-            .from(apisTable);
+            .from(apisTable)
+            .where(
+                clientId !== null && clientId !== undefined
+                ? eq(apisTable.clientId, clientId)
+                : undefined
+            );
 
         return {
             total: Number(totalResult[0].total),

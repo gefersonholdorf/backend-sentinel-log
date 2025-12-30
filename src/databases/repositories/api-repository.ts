@@ -26,7 +26,7 @@ export interface ApiRepository {
         id: number;
         name: string;
     }[]>
-    totalCount(): Promise<{ 
+    totalCount(clientId: number | null): Promise<{ 
         total: number
         totalActive: number
         totalInactive: number
