@@ -28,6 +28,8 @@ export interface LogRepository {
         data: LogDocument[]
         nextCursor?: string | null
     }>
-    totalCount(clientId: number | null): Promise<number>
+    totalCountToday(clientId: number | null): Promise<number>
     volumeLogsToday(clientId: number | null): Promise<VolumeLogsTodayResult[]>
+    totalCount(clientId: number): Promise<number>
+    totalCountByAPI(apiId: number): Promise<number>
 }

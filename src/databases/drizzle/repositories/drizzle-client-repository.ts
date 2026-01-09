@@ -29,8 +29,6 @@ export class DrizzleClientRepository implements ClientRepository {
         return { client: null }
     }
 
-    console.log(rows)
-
     const client: ClientFull = {
         ...rows[0].clients,
         apis: rows

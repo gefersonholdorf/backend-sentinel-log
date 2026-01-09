@@ -7,7 +7,10 @@ export class DrizzleUserRepository implements UserRepository {
     constructor(private readonly db: MySql2Database) {}
 
     async create(data: UserInsert): Promise<{ id: number; }> {
-        const newUser = await this.db.insert(usersTable).values(data)
+        const newUser = await this.db.insert(usersTable).values({
+            ...data,
+            isActive: false
+        })
 
         return { id: newUser[0].insertId }
     }

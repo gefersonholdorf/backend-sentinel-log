@@ -43,7 +43,7 @@ async function seedLogs() {
   const API_URL = "http://127.0.0.1:3335/api/v1/logs";
 
   const TOKEN =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6MywiYXBpSWQiOjEwOCwiaWF0IjoxNzY2NTg1MDEyfQ.8d4oQKctxpExukRRthB_VGWDuZBqiCIpIJrzaZB5I2w";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6NiwiYXBpSWQiOjMxLCJpYXQiOjE3NjcxMDM5MDZ9.vnQXRDIZ-jwOS_sPAckeUEQWVMs3b8n67MWfHBgCfB4";
 
   const messages = [
     "Configuração Alterada",
@@ -77,7 +77,7 @@ async function seedLogs() {
       max: 255,
     })}`;
 
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= 18; i++) {
     const payload = {
       message: randomItem(messages),
       ip: randomIP(),

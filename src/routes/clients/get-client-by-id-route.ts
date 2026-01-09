@@ -8,6 +8,8 @@ import { isAuthenticate } from "../../middlewares/is-user-authenticate";
 import { isAuthorized } from "../../middlewares/is-authorized";
 import { getClientByIdParam } from "../../schemas/clients-schema";
 import { GetClientByIdController } from "../../controllers/clients/get-client-by-id-controller";
+import { DrizzleApiRepository } from "../../databases/drizzle/repositories/drizzle-api-repository";
+import { MongoLogRepository } from "../../databases/mongo/repositories/mongo-log-repository";
 
 const getClientByIdSchema = z.object({
     id: z.number(),
@@ -34,7 +36,9 @@ const GetClientByIdSchema = z.array(getClientByIdSchema);
 
 export const getClientByIdRoute: FastifyPluginCallbackZod = (app) => {
     const clientRepository = new DrizzleClientRepository(db)
-    const getClientIdController = new GetClientByIdController(clientRepository)
+    const apiRepository = new DrizzleApiRepository(db)
+    const logRepository = new MongoLogRepository()
+    const getClientIdController = new GetClientByIdController(clientRepository, apiRepository, logRepository)
 
     app.withTypeProvider<ZodTypeProvider>().get('/clients/:id', {
         preHandler: [isAuthenticate(app), isAuthorized(['super_admin', 'admin', 'member'])],
@@ -44,7 +48,19 @@ export const getClientByIdRoute: FastifyPluginCallbackZod = (app) => {
             params: getClientByIdParam,
             response: {
                 200: z.object({
-                    client: getClientByIdSchema 
+                    client: getClientByIdSchema,
+                    totalApis: z.number(),
+                    totalApisActive: z.number(),
+                    totalApisInactive: z.number(),
+                    totalLogs: z.number(),
+                    volumeLogsTodayData: z.array(z.object({
+                        hour: z.string(),
+                        quantity: z.number()
+                    })),
+                    logsByApi: z.array(z.object({
+                        apis: z.string(),
+                        quantity: z.number()
+                    }))
                 }),
                 404: z.object({
                     message: z.string()

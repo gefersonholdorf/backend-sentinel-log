@@ -21,6 +21,10 @@ export class LoginController implements Controller {
                 throw new CredentialInvalidError()
             }
 
+            if(!existingUser.user.password) {
+                throw new CredentialInvalidError()
+            }
+
             const isPasswordValid = compareSync(password, existingUser.user.password)
 
             if (!isPasswordValid) {

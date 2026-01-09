@@ -1,25 +1,27 @@
 import type { FastifyPluginCallbackZod } from "fastify-type-provider-zod";
-import { CreateUserController } from "../../controllers/users/create-user-controller";
 import z from "zod";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { createUserSchema } from "../../schemas/users-schema";
+import { inviteUserSchema } from "../../schemas/users-schema";
 import { DrizzleUserRepository } from "../../databases/drizzle/repositories/drizzle-user-repository";
 import { db } from "../../databases/drizzle/drizzle-client";
 import { DrizzleClientRepository } from "../../databases/drizzle/repositories/drizzle-client-repository";
+import { DrizzleUserOnboardingTokenRepository } from "../../databases/drizzle/repositories/drizzle-user-onboarding-token-repository";
+import { InviteUserController } from "../../controllers/users/invite-user-controller";
 
-export const createUserRoute: FastifyPluginCallbackZod = (app) => {
+export const inviteUserRoute: FastifyPluginCallbackZod = (app) => {
     const userRepository = new DrizzleUserRepository(db)
     const clientRepository = new DrizzleClientRepository(db)
-    const createUserController = new CreateUserController(userRepository, clientRepository)
+    const userOnBoardingToken = new DrizzleUserOnboardingTokenRepository(db)
+    const inviteUserController = new InviteUserController(userRepository, clientRepository, userOnBoardingToken)
 
     app.withTypeProvider<ZodTypeProvider>().post('/users', {
         schema: {
             tags: ['Users'],
-            summary: 'Create a new User',
-            body: createUserSchema,
+            summary: 'Invite a new User',
+            body: inviteUserSchema,
             response: {
-                201: z.object({
-                    id: z.number()
+                200: z.object({
+                    url: z.url()
                 }),
                 404: z.object({
                     message: z.string()
@@ -32,5 +34,5 @@ export const createUserRoute: FastifyPluginCallbackZod = (app) => {
                 })
             }
         }
-    }, createUserController.handle.bind(createUserController))
+    }, inviteUserController.handle.bind(inviteUserController))
 }

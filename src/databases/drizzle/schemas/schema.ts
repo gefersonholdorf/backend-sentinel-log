@@ -19,8 +19,8 @@ export const usersTable = mysqlTable('users', {
   name: varchar('name', { length: 255 }).notNull(),
   role: mysqlEnum('role', ['super_admin', 'admin', 'member']).notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
-  cpf: varchar('cpf', { length: 14 }).notNull().unique(),
-  password: varchar('password', { length: 255 }).notNull(),
+  cpf: varchar('cpf', { length: 14 }).unique(),
+  password: varchar('password', { length: 255 }),
   isActive: boolean('is_active').notNull().default(true),
   clientId: int('client_id').references(() => clientsTable.id, { onDelete: "restrict", }),
   createdAt: timestamp('created_at')
@@ -44,3 +44,12 @@ export const apisTable = mysqlTable('apis', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 });
+
+export const userOnboardingTokens = mysqlTable('user_onboarding_tokens', {
+  id: int('id').primaryKey().autoincrement(),
+  userId: int('user_id').references(() => usersTable.id).notNull(),
+  token: varchar('token', {length: 255}).notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  usedAt: timestamp('used_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})

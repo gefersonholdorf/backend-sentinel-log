@@ -1,15 +1,13 @@
 import z from "zod";
 
-export const createUserSchema = z.object({
+export const inviteUserSchema = z.object({
     name: z.string(),
-    cpf: z.string(),
     email: z.email(),
-    password: z.string(),
     clientId: z.number().nullable(),
     role: z.enum(['super_admin', 'admin', 'member'])
 })
 
-export type CreateUserSchema = z.infer<typeof createUserSchema>
+export type inviteUserSchema = z.infer<typeof inviteUserSchema>
 
 export const loginSchema = z.object({
     email: z.email(),

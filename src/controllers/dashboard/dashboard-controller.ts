@@ -22,7 +22,7 @@ export class DashboardController implements Controller {
 
         const totalClients = !clientId ? await this.clientRepository.totalCount() : 1
         const { total: totalApis, totalActive: totalApisActive, totalInactive: totalApisInactive } = await this.apiRepository.totalCount(clientId)
-        const totalLogsToday = await this.logRepository.totalCount(clientId)
+        const totalLogsToday = await this.logRepository.totalCountToday(clientId)
         const volumeLogsTodayData = await this.logRepository.volumeLogsToday(clientId)
 
         return reply.status(200).send({

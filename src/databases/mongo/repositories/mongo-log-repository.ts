@@ -59,7 +59,7 @@ export class MongoLogRepository implements LogRepository {
         }
     }
 
-    async totalCount(clientId: number | null): Promise<number> {
+    async totalCountToday(clientId: number | null): Promise<number> {
 
     const startOfDay = new Date()
     startOfDay.setHours(0, 0, 0, 0)
@@ -137,4 +137,24 @@ export class MongoLogRepository implements LogRepository {
 
     return result
 }
+
+    async totalCount(clientId?: number): Promise<number> {
+        const filter: { clientId?: number } = {}
+
+        if (typeof clientId === 'number') {
+            filter.clientId = clientId
+        }
+
+        return LogModel.countDocuments(filter)
+    }
+
+    async totalCountByAPI(apiId: number): Promise<number> {
+        const filter: { apiId?: number } = {}
+
+        if (typeof apiId === 'number') {
+            filter.apiId = apiId
+        }
+
+        return LogModel.countDocuments(filter)
+    }
 }

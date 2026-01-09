@@ -1,5 +1,5 @@
 import type { FastifyPluginCallbackZod } from "fastify-type-provider-zod";
-import { createUserRoute } from "./users/create-user-route";
+import { inviteUserRoute } from "./users/invite-user-route";
 import { healthRoute } from "./health/health-route";
 import { loginRoute } from "./auth/login-route";
 import { meRoute } from "./auth/me-route";
@@ -28,7 +28,7 @@ export const routes: FastifyPluginCallbackZod = (app) => {
     app.register(loginRoute)
     app.register(meRoute)
     
-    app.register(createUserRoute)
+    app.register(inviteUserRoute)
 
     app.register(createClientRoute)
     app.register(updateClientRoute)
