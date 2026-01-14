@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { ExistingEntityError } from '../errors/existing-entity-error';
 import { CredentialInvalidError } from '../errors/credential-invalid-error';
 import { EntityNotFoundError } from '../errors/entity-not-found-error';
+import { GoneError } from '../errors/gone-error';
 
 export function registerErrorHandler(app: FastifyInstance) {
     app.setErrorHandler((error: any, request, reply) => {
@@ -23,6 +24,10 @@ export function registerErrorHandler(app: FastifyInstance) {
 
         if (error instanceof EntityNotFoundError) {
             reply.status(404).send({ message: error.message });
+        }
+
+        if (error instanceof GoneError) {
+            reply.status(410).send({ message: error.message });
         }
 
         console.error(error)

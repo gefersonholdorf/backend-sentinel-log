@@ -16,9 +16,10 @@ import { fetchLogRoute } from "./logs/fetch-logs-route";
 import { dashboardRoute } from "./dashboard/dashboard-route";
 import { renewTokenApiRoute } from "./apis/renew-token-api-route";
 import { revokeTokenApiRoute } from "./apis/revoke-token-api-route";
-import { ComboboxListController } from "../controllers/clients/combobox-list-controller";
 import { comboboxClientRoute } from "./clients/combobox-clients-route";
 import { getClientByIdRoute } from "./clients/get-client-by-id-route";
+import { validateUserRoute } from "./users/validate-user-route";
+import { completeUserRoute } from "./users/complete-user-route";
 
 export const routes: FastifyPluginCallbackZod = (app) => {
     app.register(healthRoute)
@@ -29,6 +30,8 @@ export const routes: FastifyPluginCallbackZod = (app) => {
     app.register(meRoute)
     
     app.register(inviteUserRoute)
+    app.register(validateUserRoute)
+    app.register(completeUserRoute)
 
     app.register(createClientRoute)
     app.register(updateClientRoute)

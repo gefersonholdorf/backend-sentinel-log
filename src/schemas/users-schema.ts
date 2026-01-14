@@ -15,3 +15,18 @@ export const loginSchema = z.object({
 })
 
 export type LoginSchema = z.infer<typeof loginSchema>
+
+export const validateUserSchema = z.object({
+    token: z.string().optional(),
+})
+
+export type ValidateUserSchema = z.infer<typeof validateUserSchema>
+
+export const completeUserSchema = z.object({
+    name: z.string(),
+    email: z.email(),
+    cpf: z.string(),
+    password: z.string()
+})
+
+export type CompleteUserSchema = z.infer<typeof completeUserSchema>

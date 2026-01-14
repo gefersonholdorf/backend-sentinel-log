@@ -53,7 +53,7 @@ export class InviteUserController implements Controller {
                 userId, expiresAt, token: tokenHashed
             })
 
-            const url = `${env.URL}/onboarding/validate-token?token=${tokenHashed}`
+            const url = `${env.URL}onboarding/validate-token?token=${tokenHashed}`
 
             return reply.status(200).send({
                 url

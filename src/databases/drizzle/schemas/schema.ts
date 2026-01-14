@@ -48,7 +48,7 @@ export const apisTable = mysqlTable('apis', {
 export const userOnboardingTokens = mysqlTable('user_onboarding_tokens', {
   id: int('id').primaryKey().autoincrement(),
   userId: int('user_id').references(() => usersTable.id).notNull(),
-  token: varchar('token', {length: 255}).notNull(),
+  token: varchar('token', {length: 255}).notNull().unique(),
   expiresAt: timestamp('expires_at').notNull(),
   usedAt: timestamp('used_at'),
   createdAt: timestamp('created_at').notNull().defaultNow(),

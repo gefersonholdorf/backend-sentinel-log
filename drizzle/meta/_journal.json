@@ -36,6 +36,13 @@
       "when": 1767186741254,
       "tag": "0004_tan_skullbuster",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1768154031944,
+      "tag": "0005_fast_dreaming_celestial",
+      "breakpoints": true
     }
   ]
 }

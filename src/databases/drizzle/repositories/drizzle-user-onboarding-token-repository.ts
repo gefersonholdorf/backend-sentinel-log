@@ -33,4 +33,24 @@ export class DrizzleUserOnboardingTokenRepository implements UserOnboardingToken
             userOnBoardingToken: userOnBoardingToken[0]
         }
     }
+
+    async findByToken(token: string): Promise<{ userOnBoardingToken: UserOnBoardingToken | null; }> {
+        const userOnBoardingToken = await this.db.select()
+                                                .from(userOnboardingTokens)
+                                                .where(and(
+                                                    eq(userOnboardingTokens.token, token),
+                                                    isNull(userOnboardingTokens.usedAt)
+                                                ))
+                                                .limit(1)
+        
+        if(userOnBoardingToken.length < 1) {
+            return {
+                userOnBoardingToken: null
+            }
+        }
+
+        return {
+            userOnBoardingToken: userOnBoardingToken[0]
+        }
+    }
 }

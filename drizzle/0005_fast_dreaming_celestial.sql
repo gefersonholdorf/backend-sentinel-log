@@ -1,0 +1,1 @@
+ALTER TABLE `user_onboarding_tokens` ADD CONSTRAINT `user_onboarding_tokens_token_unique` UNIQUE(`token`);

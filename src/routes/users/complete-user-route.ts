@@ -1,31 +1,26 @@
 import type { FastifyPluginCallbackZod } from "fastify-type-provider-zod";
-import z from "zod";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { inviteUserSchema } from "../../schemas/users-schema";
-import { DrizzleUserRepository } from "../../databases/drizzle/repositories/drizzle-user-repository";
+import z from "zod";
 import { db } from "../../databases/drizzle/drizzle-client";
 import { DrizzleClientRepository } from "../../databases/drizzle/repositories/drizzle-client-repository";
 import { DrizzleUserOnboardingTokenRepository } from "../../databases/drizzle/repositories/drizzle-user-onboarding-token-repository";
-import { InviteUserController } from "../../controllers/users/invite-user-controller";
-import { isAuthenticate } from "../../middlewares/is-user-authenticate";
-import { isAuthorized } from "../../middlewares/is-authorized";
+import { DrizzleUserRepository } from "../../databases/drizzle/repositories/drizzle-user-repository";
+import { completeUserSchema } from "../../schemas/users-schema";
+import { CompleteUserController } from "../../controllers/users/complete-user-controller";
 
-export const inviteUserRoute: FastifyPluginCallbackZod = (app) => {
+export const completeUserRoute: FastifyPluginCallbackZod = (app) => {
     const userRepository = new DrizzleUserRepository(db)
     const clientRepository = new DrizzleClientRepository(db)
     const userOnBoardingToken = new DrizzleUserOnboardingTokenRepository(db)
-    const inviteUserController = new InviteUserController(userRepository, clientRepository, userOnBoardingToken)
+    const completeUserController = new CompleteUserController(userRepository, clientRepository, userOnBoardingToken)
 
-    app.withTypeProvider<ZodTypeProvider>().post('/users', {
-        preHandler: [isAuthenticate(app), isAuthorized(['super_admin', 'admin'])],
+    app.withTypeProvider<ZodTypeProvider>().post('/users/:id', {
         schema: {
             tags: ['Users'],
-            summary: 'Invite a new User',
-            body: inviteUserSchema,
+            summary: 'Complete info a new User',
+            body: completeUserSchema,
             response: {
-                200: z.object({
-                    url: z.url()
-                }),
+                204: z.object({}),
                 404: z.object({
                     message: z.string()
                 }),
@@ -37,5 +32,5 @@ export const inviteUserRoute: FastifyPluginCallbackZod = (app) => {
                 })
             }
         }
-    }, inviteUserController.handle.bind(inviteUserController))
+    }, completeUserController.handle.bind(completeUserController))
 }
